@@ -1,0 +1,55 @@
+<div class="container">
+  <div class="row">
+    <div class="col-6">
+      <h3>Drone Simulation Map</h3>
+      <div *ngIf="apiLoaded | async">
+        <google-map height="400px"
+            width="1200px"
+            [center]="center"
+            [zoom]="zoom">
+        <map-polyline [path]="vertices"></map-polyline>
+        <!-- <map-polygon [paths]="vertices"></map-polygon> -->
+        <map-marker *ngFor="let markerPosition of markerPositions"
+              [position]="markerPosition"
+              [options]="markerOptions"
+              [label]="label"
+        ></map-marker>
+      </google-map>
+      </div>
+    </div>
+    <div class="col-6">
+      <h3>Input Time Series Data</h3>
+      <form>
+        <div>
+          <label for="latitude">Latitude:</label>
+          <input type="text" id="latitude" [(ngModel)]="location.lat" [ngModelOptions]="{standalone: true}">
+        </div>
+        <div class="form-group">
+          <label for="longitude">Longitude:</label>
+          <input type="text"  id="longitude" [(ngModel)]="location.lng" [ngModelOptions]="{standalone: true}">
+        </div>
+        <div class="form-group">
+          <label for="time">Time:</label>
+          <input [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" [(ngModel)]="location.time" placeholder="Date Time" [ngModelOptions]="{standalone: true}">
+          <owl-date-time #dt1></owl-date-time>
+        </div>
+        <div class="form-group">
+          <label for="time">Time:</label>
+          <input #fileUploadSimple [accept]="'.csv'" type="file" (change)="droneDataFile($event)"
+      />
+
+        </div>
+
+        
+        {{importedData | json}}
+
+        <div class="row">
+          <button class="col-4 btn btn-primary margin-10" (click)="add()">Add LatLng </button> 
+          <button class="col-4 btn btn-primary margin-10" (click)="simulate(); pauseButton = true;">Simulate </button>
+          <button class="col-4 btn btn-primary margin-10" *ngIf="pauseButton" (click)="simulationRunning ? pauseSimulation() : simulate()"> {{simulationRunning ? 'Pause' : 'Resume'}}</button>
+        </div>
+        
+      </form>
+    </div>
+  </div>
+</div>
